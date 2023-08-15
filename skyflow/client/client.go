@@ -1,17 +1,19 @@
 /*
-	Copyright (c) 2022 Skyflow, Inc.
+Copyright (c) 2022 Skyflow, Inc.
 */
 package client
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
 	"github.com/skyflowapi/skyflow-go/commonutils/errors"
 	logger "github.com/skyflowapi/skyflow-go/commonutils/logwrapper"
 	"github.com/skyflowapi/skyflow-go/commonutils/messages"
+
 	"github.com/skyflowapi/skyflow-go/skyflow/common"
-	vaultapi "github.com/skyflowapi/skyflow-go/skyflow/vaultapi"
+	"github.com/skyflowapi/skyflow-go/skyflow/vaultapi"
 )
 
 type Client struct {
@@ -22,7 +24,7 @@ var clientTag = "Client"
 
 var tokenUtils TokenUtils
 
-func (client *Client) Insert(records map[string]interface{}, options ...common.InsertOptions) (common.InsertRecords, *errors.SkyflowError) {
+func (client *Client) Insert(ctx context.Context, records map[string]interface{}, options ...common.InsertOptions) (common.InsertRecords, *errors.SkyflowError) {
 	var tempOptions common.InsertOptions
 	if len(options) == 0 {
 		tempOptions = common.InsertOptions{Tokens: true}
@@ -39,7 +41,7 @@ func (client *Client) Insert(records map[string]interface{}, options ...common.I
 	}
 	insertApi := vaultapi.InsertApi{Configuration: client.configuration, Records: records, Options: tempOptions}
 
-	res, err := insertApi.Post(token)
+	res, err := insertApi.Post(ctx, token)
 
 	if err != nil {
 		return common.InsertRecords{}, err

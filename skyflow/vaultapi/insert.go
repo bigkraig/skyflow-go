@@ -4,6 +4,7 @@ Copyright (c) 2022 Skyflow, Inc.
 package vaultapi
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -15,6 +16,7 @@ import (
 	"github.com/skyflowapi/skyflow-go/commonutils/errors"
 	logger "github.com/skyflowapi/skyflow-go/commonutils/logwrapper"
 	"github.com/skyflowapi/skyflow-go/commonutils/messages"
+
 	"github.com/skyflowapi/skyflow-go/skyflow/common"
 )
 
@@ -105,7 +107,7 @@ func (insertApi *InsertApi) doValidations() *errors.SkyflowError {
 	return nil
 }
 
-func (insertApi *InsertApi) Post(token string) (common.ResponseBody, *errors.SkyflowError) {
+func (insertApi *InsertApi) Post(ctx context.Context, token string) (common.ResponseBody, *errors.SkyflowError) {
 	err := insertApi.doValidations()
 	if err != nil {
 		return nil, err
@@ -127,7 +129,8 @@ func (insertApi *InsertApi) Post(token string) (common.ResponseBody, *errors.Sky
 		return nil, errors.NewSkyflowError(errors.ErrorCodesEnum(errors.SdkErrorCode), fmt.Sprintf(messages.UNKNOWN_ERROR, insertTag, err1))
 	}
 	requestUrl := fmt.Sprintf("%s/v1/vaults/%s", insertApi.Configuration.VaultURL, insertApi.Configuration.VaultID)
-	request, _ := http.NewRequest(
+	request, _ := http.NewRequestWithContext(
+		ctx,
 		"POST",
 		requestUrl,
 		strings.NewReader(string(requestBody)),
