@@ -4,6 +4,7 @@ Copyright (c) 2022 Skyflow, Inc.
 package client
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"os"
@@ -13,6 +14,7 @@ import (
 	errors1 "github.com/skyflowapi/skyflow-go/commonutils/errors"
 	"github.com/skyflowapi/skyflow-go/commonutils/messages"
 	saUtil "github.com/skyflowapi/skyflow-go/service-account/util"
+
 	"github.com/skyflowapi/skyflow-go/skyflow/common"
 )
 
@@ -43,7 +45,7 @@ func TestInsertInvalidToken(t *testing.T) {
 	configuration := common.Configuration{VaultID: "", VaultURL: "https://www.url.com", TokenProvider: invalidToken}
 	var client = Init(configuration)
 	var record = make(map[string]interface{})
-	_, err := client.Insert(record)
+	_, err := client.Insert(context.TODO(), record)
 	skyflowError := errors1.NewSkyflowError(errors1.ErrorCodesEnum(errors1.SdkErrorCode), fmt.Sprintf(messages.INVALID_BEARER_TOKEN, clientTag))
 	check(err.GetMessage(), skyflowError.GetMessage(), t)
 
@@ -52,7 +54,7 @@ func TestDetokenizeInvalidToken(t *testing.T) {
 	configuration := common.Configuration{VaultID: "", VaultURL: "https://www.url.com", TokenProvider: invalidToken}
 	var client = Init(configuration)
 	var record = make(map[string]interface{})
-	_, err := client.Detokenize(record)
+	_, err := client.Detokenize(context.TODO(), record)
 	skyflowError := errors1.NewSkyflowError(errors1.ErrorCodesEnum(errors1.SdkErrorCode), fmt.Sprintf(messages.INVALID_BEARER_TOKEN, clientTag))
 	check(err.GetMessage(), skyflowError.GetMessage(), t)
 }
@@ -61,7 +63,7 @@ func TestGetByIdInvalidToken(t *testing.T) {
 	configuration := common.Configuration{VaultID: "", VaultURL: "https://www.url.com", TokenProvider: invalidToken}
 	var client = Init(configuration)
 	var record = make(map[string]interface{})
-	_, err := client.GetById(record)
+	_, err := client.GetById(context.TODO(), record)
 	skyflowError := errors1.NewSkyflowError(errors1.ErrorCodesEnum(errors1.SdkErrorCode), fmt.Sprintf(messages.INVALID_BEARER_TOKEN, clientTag))
 	check(err.GetMessage(), skyflowError.GetMessage(), t)
 }
@@ -79,7 +81,7 @@ func TestInsertValidToken(t *testing.T) {
 	configuration := common.Configuration{VaultID: "", VaultURL: "https://www.url.com", TokenProvider: validToken}
 	var client = Init(configuration)
 	var record = make(map[string]interface{})
-	_, err := client.Insert(record, common.InsertOptions{Tokens: true})
+	_, err := client.Insert(context.TODO(), record, common.InsertOptions{Tokens: true})
 	skyflowError := errors1.NewSkyflowError(errors1.ErrorCodesEnum(errors1.SdkErrorCode), fmt.Sprintf(messages.EMPTY_VAULT_ID, clientTag))
 	check(err.GetMessage(), skyflowError.GetMessage(), t)
 }
@@ -87,7 +89,7 @@ func TestDetokenizeValidToken(t *testing.T) {
 	configuration := common.Configuration{VaultID: "", VaultURL: "https://www.url.com", TokenProvider: validToken}
 	var client = Init(configuration)
 	var record = make(map[string]interface{})
-	_, err := client.Detokenize(record)
+	_, err := client.Detokenize(context.TODO(), record)
 	skyflowError := errors1.NewSkyflowError(errors1.ErrorCodesEnum(errors1.SdkErrorCode), fmt.Sprintf(messages.EMPTY_VAULT_ID, clientTag))
 	check(err.GetMessage(), skyflowError.GetMessage(), t)
 }
@@ -96,7 +98,7 @@ func TestGetByIdValidToken(t *testing.T) {
 	configuration := common.Configuration{VaultID: "", VaultURL: "https://www.url.com", TokenProvider: validToken}
 	var client = Init(configuration)
 	var record = make(map[string]interface{})
-	_, err := client.GetById(record)
+	_, err := client.GetById(context.TODO(), record)
 	skyflowError := errors1.NewSkyflowError(errors1.ErrorCodesEnum(errors1.SdkErrorCode), fmt.Sprintf(messages.EMPTY_VAULT_ID, clientTag))
 	check(err.GetMessage(), skyflowError.GetMessage(), t)
 }

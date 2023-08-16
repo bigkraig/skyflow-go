@@ -56,7 +56,7 @@ func (client *Client) Insert(ctx context.Context, records map[string]interface{}
 	return response, nil
 }
 
-func (client *Client) Detokenize(records map[string]interface{}) (common.DetokenizeRecords, *errors.SkyflowError) {
+func (client *Client) Detokenize(ctx context.Context, records map[string]interface{}) (common.DetokenizeRecords, *errors.SkyflowError) {
 
 	if client.configuration.TokenProvider == nil {
 		logger.Error(fmt.Sprintf(messages.MISSING_TOKENPROVIDER, clientTag))
@@ -68,7 +68,7 @@ func (client *Client) Detokenize(records map[string]interface{}) (common.Detoken
 	}
 	detokenizeApi := vaultapi.DetokenizeApi{Configuration: client.configuration, Records: records, Token: token}
 
-	res, err := detokenizeApi.Get()
+	res, err := detokenizeApi.Get(ctx)
 
 	if err != nil {
 		return common.DetokenizeRecords{}, err
@@ -83,7 +83,7 @@ func (client *Client) Detokenize(records map[string]interface{}) (common.Detoken
 	return response, nil
 }
 
-func (client *Client) GetById(records map[string]interface{}) (common.GetByIdRecords, *errors.SkyflowError) {
+func (client *Client) GetById(ctx context.Context, records map[string]interface{}) (common.GetByIdRecords, *errors.SkyflowError) {
 
 	if client.configuration.TokenProvider == nil {
 		logger.Error(fmt.Sprintf(messages.MISSING_TOKENPROVIDER, clientTag))
@@ -95,7 +95,7 @@ func (client *Client) GetById(records map[string]interface{}) (common.GetByIdRec
 	}
 	getByIdApi := vaultapi.GetByIdApi{Configuration: client.configuration, Records: records, Token: token}
 
-	res, err := getByIdApi.Get()
+	res, err := getByIdApi.Get(ctx)
 
 	if err != nil {
 		return common.GetByIdRecords{}, err
